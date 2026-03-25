@@ -1,0 +1,133 @@
+"use client"
+
+import { useState } from "react"
+import Card from "../../components/Card"
+
+export default function CardMaker() {
+	const [form, setForm] = useState({
+		name: "CRIO-01 Freezer",
+		illustration: "/templateimage.png",
+
+		type1: "/hazard.png",
+		type2: "/hazard.png",
+
+		box1Icon: "/hazard.png",
+		box1Text: "Freeze enemy for 2 turns",
+
+		box2Icon: "/hazard.png",
+		box2Text: "Gain shield when attacked",
+
+		cost: "4X3P",
+		power: "4",
+		size: "4",
+
+		linktop: false,
+		linkbottom: false,
+		linkleft: false,
+		linkright: false,
+
+		cardset: ""
+	})
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		const { name, value, type } = e.target
+
+		setForm(prev => ({
+			...prev,
+			[name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
+		}))
+	}
+
+	return (
+		<div className="min-h-screen bg-black text-[#F5F5DC] p-4">
+
+			<div className="flex flex-col lg:flex-row gap-8">
+
+				{/* CARD PREVIEW */}
+				<div className="flex justify-center lg:justify-start">
+					<div className="w-[95%] max-w-[436px]">
+						<Card {...form} />
+					</div>
+				</div>
+
+				{/* FORM */}
+				<div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+					<input name="name" value={form.name} onChange={handleChange} placeholder="name"
+						className="input" />
+
+					<input name="illustration" value={form.illustration} onChange={handleChange} placeholder="illustration url"
+						className="input" />
+
+					<input name="type1" value={form.type1} onChange={handleChange} placeholder="type1"
+						className="input" />
+
+					<input name="type2" value={form.type2} onChange={handleChange} placeholder="type2"
+						className="input" />
+
+					<input name="box1Icon" value={form.box1Icon} onChange={handleChange} placeholder="box1 icon"
+						className="input" />
+
+					<textarea name="box1Text" value={form.box1Text} onChange={handleChange} placeholder="box1 text"
+						className="input col-span-1 sm:col-span-2 h-20" />
+
+					<input name="box2Icon" value={form.box2Icon} onChange={handleChange} placeholder="box2 icon"
+						className="input" />
+
+					<textarea name="box2Text" value={form.box2Text} onChange={handleChange} placeholder="box2 text"
+						className="input col-span-1 sm:col-span-2 h-20" />
+
+					<input name="cost" value={form.cost} onChange={handleChange} placeholder="cost"
+						className="input" />
+
+					<input name="power" value={form.power} onChange={handleChange} placeholder="power"
+						className="input" />
+
+					<input name="size" value={form.size} onChange={handleChange} placeholder="size"
+						className="input" />
+
+					<input name="cardset" value={form.cardset} onChange={handleChange} placeholder="cardset"
+						className="input" />
+
+					{/* CHECKBOXES */}
+					<div className="flex items-center gap-2">
+						<input type="checkbox" name="linktop" checked={form.linktop} onChange={handleChange} />
+						<span>link top</span>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<input type="checkbox" name="linkbottom" checked={form.linkbottom} onChange={handleChange} />
+						<span>link bottom</span>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<input type="checkbox" name="linkleft" checked={form.linkleft} onChange={handleChange} />
+						<span>link left</span>
+					</div>
+
+					<div className="flex items-center gap-2">
+						<input type="checkbox" name="linkright" checked={form.linkright} onChange={handleChange} />
+						<span>link right</span>
+					</div>
+
+				</div>
+			</div>
+
+			{/* Tailwind helper class */}
+			<style jsx>{`
+				.input {
+					background: black;
+					color: #F5F5DC;
+					border: 1px solid #F5F5DC;
+					padding: 8px 10px;
+					border-radius: 6px;
+					outline: none;
+				}
+
+				.input:focus {
+					box-shadow: 0 0 0 1px #F5F5DC;
+				}
+			`}</style>
+		</div>
+	)
+}
