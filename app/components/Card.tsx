@@ -44,9 +44,9 @@ export default function Card({
 }: CardProps) {
 
 	return (
-		<div className={`relative aspect-[436/613] w-[436px]`}>
+		<div className={`relative aspect-[436/613] w-full [container-type:inline-size]`}>
 			{/* nameplate */}
-			<p className={'absolute underline top-6.5 left-25 text-2xl text-gray-900 font-black z-10 drop-shadow-xl/50 drop-shadow-[2px_0px_0px_rgba(0,0,0,0.8)]'}>
+			<p className={'absolute underline top-[6.5cqw] left-[23cqw] text-[clamp(5px,5.5cqw,24px)] text-gray-900 font-black z-10 drop-shadow-[2px_0px_0px_rgba(0,0,0,0.8)]'}>
 				CRIO-01 Freezer
 			</p>
 			<p className={'absolute top-13.5 left-26 text-s text-gray-900 font-bold z-10 drop-shadow-2xl/50 '}>Cryoneer mech</p>

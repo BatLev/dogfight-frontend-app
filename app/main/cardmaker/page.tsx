@@ -34,86 +34,74 @@ export default function CardMaker() {
 
 		setForm(prev => ({
 			...prev,
-			[name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value
+			[name]: type === "checkbox"
+				? (e.target as HTMLInputElement).checked
+				: value
 		}))
 	}
 
 	return (
-		<div className="min-h-screen bg-black text-[#F5F5DC] p-4">
+		<div className="min-h-screen bg-black text-[#F5F5DC] flex items-center justify-center p-4">
 
-			<div className="flex flex-col lg:flex-row gap-8">
+			<div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8">
 
-				{/* CARD PREVIEW */}
-				<div className="flex justify-center lg:justify-start">
-					<div className="w-[95%] max-w-[436px]">
-						<Card {...form} />
-					</div>
+				{/* CARD */}
+				<div className="w-full max-w-[436px] mx-auto lg:mx-0">
+					<Card {...form} />
 				</div>
 
 				{/* FORM */}
-				<div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+				<div className="flex-1 w-full max-w-2xl mx-auto lg:mx-0">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-					<input name="name" value={form.name} onChange={handleChange} placeholder="name"
-						className="input" />
+						<input name="name" value={form.name} onChange={handleChange} placeholder="name" className="input" />
+						<input name="illustration" value={form.illustration} onChange={handleChange} placeholder="illustration url" className="input" />
 
-					<input name="illustration" value={form.illustration} onChange={handleChange} placeholder="illustration url"
-						className="input" />
+						<input name="type1" value={form.type1} onChange={handleChange} placeholder="type1" className="input" />
+						<input name="type2" value={form.type2} onChange={handleChange} placeholder="type2" className="input" />
 
-					<input name="type1" value={form.type1} onChange={handleChange} placeholder="type1"
-						className="input" />
+						<input name="box1Icon" value={form.box1Icon} onChange={handleChange} placeholder="box1 icon" className="input" />
+						<textarea name="box1Text" value={form.box1Text} onChange={handleChange} placeholder="box1 text"
+							className="input sm:col-span-2 h-20" />
 
-					<input name="type2" value={form.type2} onChange={handleChange} placeholder="type2"
-						className="input" />
+						<input name="box2Icon" value={form.box2Icon} onChange={handleChange} placeholder="box2 icon" className="input" />
+						<textarea name="box2Text" value={form.box2Text} onChange={handleChange} placeholder="box2 text"
+							className="input sm:col-span-2 h-20" />
 
-					<input name="box1Icon" value={form.box1Icon} onChange={handleChange} placeholder="box1 icon"
-						className="input" />
+						<input name="cost" value={form.cost} onChange={handleChange} placeholder="cost" className="input" />
+						<input name="power" value={form.power} onChange={handleChange} placeholder="power" className="input" />
 
-					<textarea name="box1Text" value={form.box1Text} onChange={handleChange} placeholder="box1 text"
-						className="input col-span-1 sm:col-span-2 h-20" />
+						<input name="size" value={form.size} onChange={handleChange} placeholder="size" className="input" />
+						<input name="cardset" value={form.cardset} onChange={handleChange} placeholder="cardset" className="input" />
 
-					<input name="box2Icon" value={form.box2Icon} onChange={handleChange} placeholder="box2 icon"
-						className="input" />
+						{/* CHECKBOXES */}
+						<div className="flex flex-wrap gap-4 sm:col-span-2">
+							<label className="flex items-center gap-2">
+								<input type="checkbox" name="linktop" checked={form.linktop} onChange={handleChange} />
+								top
+							</label>
 
-					<textarea name="box2Text" value={form.box2Text} onChange={handleChange} placeholder="box2 text"
-						className="input col-span-1 sm:col-span-2 h-20" />
+							<label className="flex items-center gap-2">
+								<input type="checkbox" name="linkbottom" checked={form.linkbottom} onChange={handleChange} />
+								bottom
+							</label>
 
-					<input name="cost" value={form.cost} onChange={handleChange} placeholder="cost"
-						className="input" />
+							<label className="flex items-center gap-2">
+								<input type="checkbox" name="linkleft" checked={form.linkleft} onChange={handleChange} />
+								left
+							</label>
 
-					<input name="power" value={form.power} onChange={handleChange} placeholder="power"
-						className="input" />
+							<label className="flex items-center gap-2">
+								<input type="checkbox" name="linkright" checked={form.linkright} onChange={handleChange} />
+								right
+							</label>
+						</div>
 
-					<input name="size" value={form.size} onChange={handleChange} placeholder="size"
-						className="input" />
-
-					<input name="cardset" value={form.cardset} onChange={handleChange} placeholder="cardset"
-						className="input" />
-
-					{/* CHECKBOXES */}
-					<div className="flex items-center gap-2">
-						<input type="checkbox" name="linktop" checked={form.linktop} onChange={handleChange} />
-						<span>link top</span>
 					</div>
-
-					<div className="flex items-center gap-2">
-						<input type="checkbox" name="linkbottom" checked={form.linkbottom} onChange={handleChange} />
-						<span>link bottom</span>
-					</div>
-
-					<div className="flex items-center gap-2">
-						<input type="checkbox" name="linkleft" checked={form.linkleft} onChange={handleChange} />
-						<span>link left</span>
-					</div>
-
-					<div className="flex items-center gap-2">
-						<input type="checkbox" name="linkright" checked={form.linkright} onChange={handleChange} />
-						<span>link right</span>
-					</div>
-
 				</div>
+
 			</div>
 
-			{/* Tailwind helper class */}
 			<style jsx>{`
 				.input {
 					background: black;
