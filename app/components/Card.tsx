@@ -46,10 +46,10 @@ export default function Card({
 	return (
 		<div className={`relative aspect-[436/613] w-full [container-type:inline-size]`}>
 			{/* nameplate */}
-			<p className={'absolute underline top-[6.5cqw] left-[23cqw] text-[clamp(5px,5.5cqw,24px)] text-gray-900 font-black z-10 drop-shadow-[2px_0px_0px_rgba(0,0,0,0.8)]'}>
+			<p className={'absolute underline top-[6cqw] left-[23cqw] text-[5.5cqw] text-gray-900 font-black z-10 drop-shadow-[2px_0px_0px_rgba(0,0,0,0.8)]'}>
 				CRIO-01 Freezer
 			</p>
-			<p className={'absolute top-13.5 left-26 text-s text-gray-900 font-bold z-10 drop-shadow-2xl/50 '}>Cryoneer mech</p>
+			<p className={'absolute top-[13cqw] left-[24cqw] text-[3cqw]  text-gray-900 font-bold z-10 drop-shadow-2xl/50 '}>Cryoneer mech</p>
 
 			{/* Background */}
 			<img
@@ -87,7 +87,7 @@ export default function Card({
 
 			{/* Cost */}
 
-			<p className={'absolute rotate-270 top-[84%] left-[90.5%] text-xl text-[#e8931d] font-bold z-10 drop-shadow-2xl drop-shadow-[1px_1px_1px_rgba(1,1,1,0.8),1px_1px_1px_rgba(1,1,1,0.8)]'} > 4X3P</p>
+			<p className={'absolute rotate-270 top-[84%] left-[90.5%] text-[5cqw] text-[#e8931d] font-bold z-10 drop-shadow-2xl drop-shadow-[1px_1px_1px_rgba(1,1,1,0.8),1px_1px_1px_rgba(1,1,1,0.8)]'} > 4X3P</p>
 
 			{/* types */}
 			<img
@@ -101,17 +101,17 @@ export default function Card({
 
 			{/* ATK/DEF */}
 			<p
-				className="absolute top-[90%] left-[5%]  text-5xl text-[#e8931d]"
+				className="absolute top-[87.5%] left-[5%]  text-[12cqw] text-[#e8931d]"
 			>4</p>
 			<div
 				className="absolute aspect-square top-[90%] left-[11.5%] h-1/15 mask-[url('/power.png')] mask-alpha mask-cover bg-[#e8931d]"
 			/>
 			<p
-				className="absolute top-[90%] left-[20.5%]  text-5xl text-[#e8931d]"
+				className="absolute top-[87.5%] left-[20.5%]  text-[12cqw] text-[#e8931d]"
 			>/</p>
 
 			<p
-				className="absolute top-[90%] left-[27%]  text-5xl text-[#e8931d]"
+				className="absolute top-[87.5%] left-[27%]  text-[12cqw] text-[#e8931d]"
 			>4</p>
 
 			<div
@@ -143,7 +143,7 @@ export default function Card({
 					className="aspect-square h-2/3 mt-auto mb-auto ml-2 mr-2 drop-shadow-2xl/99  
 					drop-shadow-[0_0_2px_rgba(223,131,29,0.9),0_0_2px_rgba(223,131,29,0.9),0_0_2px_rgba(223,131,29,0.9)] "
 				/>
-				<p className="uppercase mr-1 text-[#e8931d] font-bold text-lg text-shadow-lg text-shadow-black">
+				<p className="uppercase mr-1 text-[#e8931d] font-bold text-[4.2cqw] text-shadow-lg text-shadow-black">
 					{box1Text}Lorem IPSUM DOLOR ET ASD ASD ASD ASD ASD ASD SAD ASD  WASD
 				</p>
 			</div>
@@ -174,7 +174,7 @@ export default function Card({
 					drop-shadow-[0_0_2px_rgba(223,131,29,0.9),0_0_2px_rgba(223,131,29,0.9),0_0_2px_rgba(223,131,29,0.9)] "
 
 				/>
-				<p className="uppercase mr-1 text-[#e8931d] font-bold text-lg text-shadow-lg text-shadow-black">
+				<p className="uppercase mr-1 text-[#e8931d] font-bold text-[4.2cqw] text-shadow-lg text-shadow-black">
 					{box1Text}Lorem IPSUM DOLOR ET ASD ASD ASD ASD ASD ASD ASD ASD WASD
 				</p>
 			</div>
