@@ -13,9 +13,9 @@ const pages: Page[] = [
 	{ name: "Home", path: "/main" },
 	{ name: "Card Maker", path: "/main/cardmaker" },
 	{ name: "Card Gallery", path: "/main/cardgallery" },
-	{ name: "Deck Builder", path: "/main/deckbuilder" },
+	//	{ name: "Deck Builder", path: "/main/deckbuilder" },
 	{ name: "Rules", path: "/main/rules" },
-	{ name: "Combat", path: "/main/combat" },
+	//	{ name: "Combat", path: "/main/combat" },
 ]
 
 export default function Header() {
