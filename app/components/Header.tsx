@@ -1,5 +1,5 @@
 "use client"
-
+import { jwtDecode } from "jwt-decode";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image"
@@ -22,6 +22,21 @@ export default function Header() {
 	const pathname = usePathname()
 	const router = useRouter()
 	const [isDesktop, setIsDesktop] = useState(false)
+
+	// redirect to auth when needed
+	useEffect(() => {
+
+		let token = localStorage.getItem("token");
+		if (pathname != "/main/login") {
+			if (token) {
+				let payload: any = jwtDecode(token);
+				if (payload.exp * 1000 < Date.now()) router.replace("/main/login");
+			} else {
+				router.replace("/main/login");
+			}
+		}
+		console.log("redirect")
+	})
 
 	// Detect desktop based on window width
 	useEffect(() => {
