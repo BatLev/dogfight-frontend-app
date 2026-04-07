@@ -61,7 +61,7 @@ export default function ImageFrameCropper() {
 		const formData = new FormData();
 		formData.append("file", blob, "cropped.jpg");
 
-		await fetch("/api/upload", {
+		await fetch("http://localhost:8000/upload_illustration", {
 			method: "POST",
 			body: formData,
 		});

@@ -1,33 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Card from "../../components/Card"
+import CardProps from "@/app/interfaces/card"
+import { useSearchParams } from "next/navigation"
+import { getcard } from "@/app/utility/api_calls"
 
 export default function CardMaker() {
-	const [form, setForm] = useState({
-		name: "CRIO-01 Freezer",
+	const [form, setForm] = useState<CardProps>({
+		id: 0,
+		name: "???",
+		user_id: 1,
 		illustration: "/templateimage.png",
 
 		type1: "/hazard.png",
 		type2: "/hazard.png",
 
-		box1Icon: "/hazard.png",
-		box1Text: "Freeze enemy for 2 turns",
+		skilltype1: "/hazard.png",
+		skilltext1: "???",
 
-		box2Icon: "/hazard.png",
-		box2Text: "Gain shield when attacked",
+		skilltype2: "/hazard.png",
+		skilltext2: "???",
 
-		cost: "4X3P",
-		power: "4",
-		size: "4",
+		cost: "?X?P",
+		power: "?",
+		size: "?",
 
-		linktop: false,
-		linkbottom: false,
-		linkleft: false,
-		linkright: false,
+		linktop: "",
+		linkbottom: "",
+		linkleft: "",
+		linkright: "",
 
 		cardset: ""
 	})
+
+
+	const id: number = Number(useSearchParams().get("id"))
+
+	useEffect(() => {
+		if (id > 0) {
+			getcard(id).then(res => setForm(res))
+		}
+	}, [])
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 		const { name, value, type } = e.target
