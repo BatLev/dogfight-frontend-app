@@ -1,6 +1,7 @@
 import CardProps from "@/app/interfaces/card"
+import { API_URL } from "../settings";
 
-const url = "http://localhost:8000"
+const url = API_URL;
 
 const paths = {
 	cards: "cards"
