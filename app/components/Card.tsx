@@ -1,9 +1,67 @@
 "use client"
-import CardProps from "@/interfaces/card";
 import clsx from "clsx";
+import { API_URL } from "../settings";
+import { CardCreate } from "../interfaces/card";
+import { get } from "node:https";
 
-export default function Card({ id, name, user_id, illustration, type1, type2, skilltype1, skilltext1, skilltype2, skilltext2, cost, power, size, linktop, linkbottom, linkleft, linkright, cardset
-}: CardProps) {
+export default function Card({ name, title, user_id, illustration, cardtype, type1, type2, skilltype1, skilltext1, skilltype2, skilltext2, cost, power, size, linktop, linkbottom, linkleft, linkright, cardset
+}: CardCreate) {
+
+	function getframe(currenttype: string) {
+		switch (currenttype) {
+			case "unit":
+				return "/assets/frames/frametransparent.png"
+				break;
+			case "command":
+				return "/assets/frames/frametransparent_command.png"
+				break;
+			case "equipment":
+				return "/assets/frames/frametransparent_equipment.png"
+				break;
+			default:
+				return "/assets/frames/frametransparent.png"
+		}
+	}
+
+	function gettextbox(currentextbox: string) {
+		switch (currentextbox) {
+			case "unit":
+				return "/assets/textures/textboximagetransparent.png"
+				break;
+			case "command":
+				return "/assets/textures/textboximageransparent_command.png"
+				break;
+			case "equipment":
+				return "/assets/texture/textboximagetransparent_equipment.png"
+				break;
+			default:
+				return "/assets/textures/textboximagetransparent.png"
+		}
+	}
+	function getport(currentport: string) {
+		switch (currentport) {
+			case "unit/left":
+				return "/assets/ports/portleft.png"
+				break;
+			case "command/left":
+				return "/assets/ports/portleft_command.png"
+				break;
+			case "equipment/left":
+				return "/assets/ports/portleft_equipment.png"
+				break;
+			case "unit/right":
+				return "/assets/ports/portright.png"
+				break;
+			case "command/right":
+				return "/assets/ports/portright_command.png"
+				break;
+			case "equipment/right":
+				return "/assets/ports/portright_equipment.png"
+				break;
+			default:
+				return undefined
+		}
+	}
 
 	return (
 		<div className={styles.container}>
@@ -12,73 +70,84 @@ export default function Card({ id, name, user_id, illustration, type1, type2, sk
 				{name}
 			</p>
 			<p className={styles.subtitle}>
-				Cryoneer mech
+				{title}
 			</p>
 
 			{/* Background */}
 			<img
-				src={"/templateimage.png"}
+				src={API_URL + "/illustrations/" + illustration}
 				className={styles.bg}
 			/>
 
 			{/* Frame */}
 			<img
-				src={"/frametransparent.png"}
+				src={getframe(cardtype)}
 				className={styles.frame}
 			/>
 
 			{/* Ports */}
-			<img src="/portleft.png" className={clsx(styles.port.base, styles.port.right)} />
-			<img src="/portleft.png" className={clsx(styles.port.base, styles.port.left)} />
-			<img src="/portleft.png" className={clsx(styles.port.base, styles.port.top)} />
-			<img src="/portleft.png" className={clsx(styles.port.base, styles.port.bottom)} />
+			<img src={getport(linkright)} className={clsx(styles.port.base, styles.port.right)} />
+			<img src={getport(linkleft)} className={clsx(styles.port.base, styles.port.left)} />
+			<img src={getport(linktop)} className={clsx(styles.port.base, styles.port.top)} />
+			<img src={getport(linkbottom)} className={clsx(styles.port.base, styles.port.bottom)} />
 
 			{/* Cost */}
-			<p className={styles.cost}>4X3P</p>
-
+			<p className={styles.cost}>{cost}</p>
 			{/* Types */}
 			<img
-				src="/hazard.png"
+				src={"/assets/icons/" + type1}
 				className={clsx(styles.type.base, styles.type.top)}
 			/>
 			<img
-				src="/hazard.png"
+				src={"/assets/icons/" + type2}
 				className={clsx(styles.type.base, styles.type.bottom)}
 			/>
 
 			{/* ATK / DEF */}
-			<p className={styles.power}>4</p>
+			<p className={styles.power}>{power}</p>
 
 			<div className={styles.powerIcon} />
 
 			<p className={styles.slash}>/</p>
 
-			<p className={styles.def}>4</p>
+			<p className={styles.def}>{size}</p>
 
 			<div className={styles.sizeIcon} />
 
 			{/* Text Box 1 */}
-			<div className={clsx(styles.box.base, styles.box.top)}>
-				<img src="/hazard.png" className={styles.boxIcon} />
+			<div
+				style={{
+					backgroundImage: `url(${gettextbox(cardtype)})`,
+					backgroundSize: "cover",
+					backgroundPosition: "center",
+				}}
+				className={clsx(styles.box.base, styles.box.top)}>
+				<img src={"/assets/icons/" + skilltype1} className={styles.boxIcon} />
 				<p className={styles.boxText}>
 					{skilltext1}
 				</p>
 			</div>
 
 			{/* Text Box 2 */}
-			<div className={clsx(styles.box.base, styles.box.bottom)}>
-				<img src="/hazard.png" className={styles.boxIcon} />
+			<div
+				style={{
+					backgroundImage: `url(${gettextbox(cardtype)})`,
+					backgroundSize: "cover",
+					backgroundPosition: "center",
+				}}
+				className={clsx(styles.box.base, styles.box.bottom)}>
+				<img src={"/assets/icons/" + skilltype2} className={styles.boxIcon} />
 				<p className={styles.boxText}>
 					{skilltext2}
 				</p>
 			</div>
-		</div>
+		</div >
 	)
 }
 
 /* =========================
-    STYLES 
-   ========================= */
+STYLES 
+========================= */
 
 const styles = {
 	container: "relative aspect-[436/613] w-full [container-type:inline-size]",
@@ -94,7 +163,7 @@ const styles = {
 
 	/* PORTS */
 	port: {
-		base: `absolute inset-0 aspect-squire w-1/15 object-cover drop-shadow-2xl/50 
+		base: `absolute inset-0 w-1/15 object-cover drop-shadow-2xl/50 
 		drop-shadow-[-1px_-2px_0px_rgba(252,197,79,0.9),-1px_2px_0px_rgba(252,197,79,0.9)]`,
 
 		right: "top-[47%] left-[93%]",
@@ -119,8 +188,8 @@ const styles = {
 	def: "absolute top-[87.5%] left-[27%]  text-[12cqw] text-[#e8931d]",
 
 	/* ICONS */
-	powerIcon: "absolute aspect-square top-[90%] left-[11.5%] h-1/15 mask-[url('/power.png')] mask-alpha mask-cover bg-[#e8931d]",
-	sizeIcon: "absolute aspect-square top-[90.5%] left-[35%] h-1/16 mask-[url('/size.png')] mask-alpha mask-cover bg-[#e8931d]",
+	powerIcon: "absolute aspect-square top-[90%] left-[11.5%] h-1/15 mask-[url('/assets/icons/power.png')] mask-alpha mask-cover bg-[#e8931d]",
+	sizeIcon: "absolute aspect-square top-[90.5%] left-[35%] h-1/16 mask-[url('/assets/icons/size.png')] mask-alpha mask-cover bg-[#e8931d]",
 
 	/* BOXES */
 	box: {
@@ -131,11 +200,14 @@ const styles = {
 		h-[15%]
 		p-1
 		flex items-start gap-2 overflow-hidden
-		bg-[url('/textboximagetransparent.png')]
 		bg-cover
 		rounded-md
 		text-[#e8931d]
 		drop-shadow-[0px_0px_1px_rgba(252,197,79,0.9),0px_0px_1px_rgba(252,197,79,0.9)]`,
+
+		unit: '',
+		command: '',
+		equiment: '',
 
 		top: "bottom-[28%]",
 		bottom: "bottom-[12%]",

@@ -1,18 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Card from "../../components/Card"
-import CardProps from "@/app/interfaces/card"
-import { useSearchParams } from "next/navigation"
-import { getcard } from "@/app/utility/api_calls"
+import { useEffect, useState } from "react";
+import Card from "../../components/Card";
+import { CardGet, CardCreate } from "@/app/interfaces/card";
+import { useSearchParams } from "next/navigation";
+import * as cardsAPI from "@/app/utility/CardAPICalls";
 
 export default function CardMaker() {
-	const [form, setForm] = useState<CardProps>({
-		id: 0,
+	const [form, setForm] = useState<CardCreate>({
 		name: "???",
+		title: "???",
 		user_id: 1,
 		illustration: "/templateimage.png",
-
+		cardtype: "unit",
 		type1: "/hazard.png",
 		type2: "/hazard.png",
 
@@ -35,11 +35,14 @@ export default function CardMaker() {
 	})
 
 
-	const id: number = Number(useSearchParams().get("id"))
+	const [id, setid] = useState(0)
+	const params = useSearchParams()
 
 	useEffect(() => {
-		if (id > 0) {
-			getcard(id).then(res => setForm(res))
+		const currentid = Number(params.get("id"));
+		if (currentid > 0) {
+			setid(currentid)
+			cardsAPI.getOne(currentid).then(res => setForm(res))
 		}
 	}, [])
 
@@ -52,6 +55,15 @@ export default function CardMaker() {
 				? (e.target as HTMLInputElement).checked
 				: value
 		}))
+	}
+
+	const deleteconfirm = () => {
+		const confirmed = window.confirm("Are you sure you want to delete this card?");
+		if (confirmed) {
+			cardsAPI.remove(id)
+		} else {
+			console.log("delete canceled");
+		}
 	}
 
 	return (
@@ -73,8 +85,17 @@ export default function CardMaker() {
 							<input name="name" value={form.name} onChange={handleChange} placeholder="name" className="input" />
 						</div>
 						<div>
+							<p>Title</p>
+							<input name="title" value={form.title} onChange={handleChange} placeholder="title" className="input" />
+						</div>
+
+						<div>
 							<p>Illustration</p>
 							<input name="illustration" value={form.illustration} onChange={handleChange} placeholder="illustration url" className="input" />
+						</div>
+						<div>
+							<p>CardType</p>
+							<input name="Cardtype" value={form.cardtype} onChange={handleChange} placeholder="cardtype" className="input" />
 						</div>
 
 						<div>
@@ -89,21 +110,21 @@ export default function CardMaker() {
 						<div className="grid grid-cols-1 gap-4">
 							<p>Skill 1</p>
 							<div className="grid grid-cols-1 gap-4">
-								<select name="box1Icon" value={form.box1Icon} onChange={handleChange} className="input">
+								<select name="skilltype1" value={form.skilltype1} onChange={handleChange} className="input">
 									<option value="hazard.png">Hazard</option>
 									<option value="portfull.png">potrtfull</option>
 								</select>
-								<textarea name="box1Text" value={form.box1Text} onChange={handleChange} placeholder="box1 text" className="input h-20" />
+								<textarea name="skilltext1" value={form.skilltext1} onChange={handleChange} placeholder="box1 text" className="input h-20" />
 							</div>
 						</div>
 						<div className="grid grid-cols-1 gap-4">
 							<p>Skill 2</p>
 							<div className="grid grid-cols-1 gap-4">
-								<select name="box2Icon" value={form.box2Icon} onChange={handleChange} className="input">
+								<select name="skilltype2" value={form.skilltype2} onChange={handleChange} className="input">
 									<option value="hazard.png">Hazard</option>
 									<option value="portfull.png">potrtfull</option>
 								</select>
-								<textarea name="box2Text" value={form.box2Text} onChange={handleChange} placeholder="box2 text" className="input h-20" />
+								<textarea name="skilltext2" value={form.skilltext2} onChange={handleChange} placeholder="box2 text" className="input h-20" />
 							</div>
 						</div>
 						<div>
@@ -146,6 +167,23 @@ export default function CardMaker() {
 									right
 								</label>
 							</div>
+							<div className="mt-6 w-full">
+								<button
+									className="w-full bg-slate-800 border-[#F5F5DC] text-white text-2xl font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors"
+									onClick={id > 0 ? () => cardsAPI.update(id, form).then(() => alert("card updated")) : () => cardsAPI.create(form).then(() => alert("created card"))}
+								>
+									{id > 0 ? "Update Card" : "Create Card"}
+								</button>
+							</div>
+							<div className="mt-6 w-full">
+								<button hidden={id > 0 ? false : true}
+									className="w-full bg-slate-800 border-[#F5F5DC] text-white text-2xl font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors"
+									onClick={deleteconfirm}
+								>
+									Delete Card
+								</button>
+							</div>
+
 						</div>
 					</div>
 				</div>

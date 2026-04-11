@@ -1,8 +1,9 @@
-export default interface CardProps {
-	id: int
+interface CardBase {
 	name: string
-	user_id: int
+	title: string
+	user_id: number
 	illustration: string
+	cardtype: string
 	type1: string
 	type2: string
 	skilltype1: string
@@ -18,3 +19,7 @@ export default interface CardProps {
 	linkright: string
 	cardset: string
 }
+
+export type CardCreate = CardBase;
+
+export type CardGet = CardBase & { id: number };
