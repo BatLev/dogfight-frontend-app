@@ -29,10 +29,10 @@ export default function Card({ name, title, user_id, illustration, cardtype, typ
 				return "/assets/textures/textboximagetransparent.png"
 				break;
 			case "command":
-				return "/assets/textures/textboximageransparent_command.png"
+				return "/assets/textures/textboximagetransparent_command.png"
 				break;
 			case "equipment":
-				return "/assets/texture/textboximagetransparent_equipment.png"
+				return "/assets/textures/textboximagetransparent_equipment.png"
 				break;
 			default:
 				return "/assets/textures/textboximagetransparent.png"
@@ -181,7 +181,8 @@ const styles = {
 	},
 
 	/* TEXT */
-	cost: "absolute rotate-270 top-[84%] left-[90.5%] text-[5cqw] text-[#e8931d] font-bold z-10 drop-shadow-2xl drop-shadow-[1px_1px_1px_rgba(1,1,1,0.8),1px_1px_1px_rgba(1,1,1,0.8)]",
+
+	cost: "absolute top-[86%] left-[96%] -translate-x-1/2 -translate-y-1/2 -rotate-90 whitespace-nowrap break-normal text-[5cqw] text-[#e8931d] font-bold z-10 drop-shadow-2xl",
 
 	power: "absolute top-[87.5%] left-[5%]  text-[12cqw] text-[#e8931d]",
 	slash: "absolute top-[87.5%] left-[20.5%]  text-[12cqw] text-[#e8931d]",
