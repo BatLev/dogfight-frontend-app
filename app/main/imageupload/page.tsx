@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { API_URL } from "@/app/settings";
+import { useState, useCallback, useEffect } from "react";
 import Cropper from "react-easy-crop";
+
+const generateRandomFilename = () =>
+	`img_${Date.now()}_${Math.random().toString(36).slice(2, 10)}.jpg`;
 
 export default function ImageFrameCropper() {
 	const [image, setImage] = useState(null);
@@ -9,15 +13,27 @@ export default function ImageFrameCropper() {
 	const [zoom, setZoom] = useState(1);
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
+	const [filename, setFilename] = useState(generateRandomFilename());
+
+	// upload states
+	const [uploading, setUploading] = useState(false);
+	const [uploadStatus, setUploadStatus] = useState(null); // "success" | "error" | null
+
+	useEffect(() => {
+		return () => {
+			if (image) URL.revokeObjectURL(image);
+		};
+	}, [image]);
+
 	const onCropComplete = useCallback((_, croppedPixels) => {
 		setCroppedAreaPixels(croppedPixels);
 	}, []);
 
 	const handleFileChange = (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			setImage(URL.createObjectURL(file));
-		}
+		const file = e.target.files?.[0];
+		if (!file) return;
+		setImage(URL.createObjectURL(file));
+		setUploadStatus(null);
 	};
 
 	const createImage = (url) =>
@@ -29,7 +45,10 @@ export default function ImageFrameCropper() {
 		});
 
 	const getCroppedImage = async () => {
+		if (!image || !croppedAreaPixels) return null;
+
 		const img = await createImage(image);
+
 		const canvas = document.createElement("canvas");
 		const ctx = canvas.getContext("2d");
 
@@ -49,31 +68,44 @@ export default function ImageFrameCropper() {
 		);
 
 		return new Promise((resolve) => {
-			canvas.toBlob((blob) => {
-				resolve(blob);
-			}, "image/jpeg", 0.9);
+			canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9);
 		});
 	};
 
 	const handleUpload = async () => {
-		const blob = await getCroppedImage();
+		try {
+			setUploading(true);
+			setUploadStatus(null);
 
-		const formData = new FormData();
-		formData.append("file", blob, "cropped.jpg");
+			const blob = await getCroppedImage();
+			if (!blob) throw new Error("No image to upload");
 
-		await fetch("http://localhost:8000/upload_illustration", {
-			method: "POST",
-			body: formData,
-		});
+			const formData = new FormData();
+			formData.append("file", blob, filename);
 
-		alert("Uploaded!");
+			const res = await fetch(
+				`${API_URL}/upload_illustration/${filename}`,
+				{
+					method: "POST",
+					body: formData,
+				}
+			);
+
+			if (!res.ok) throw new Error("Upload failed");
+
+			setUploadStatus("success");
+		} catch (err) {
+			console.error(err);
+			setUploadStatus("error");
+		} finally {
+			setUploading(false);
+		}
 	};
 
 	return (
 		<div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
 			<div className="w-full max-w-md space-y-4">
 
-				{/* Upload */}
 				<input
 					type="file"
 					accept="image/*"
@@ -81,31 +113,33 @@ export default function ImageFrameCropper() {
 					className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-orange-800 file:text-white hover:file:bg-orange-700"
 				/>
 
-				{/* Crop Area */}
+				<input
+					type="text"
+					value={filename}
+					onChange={(e) => setFilename(e.target.value)}
+					className="w-full p-2 rounded bg-slate-800 text-sm"
+				/>
+
 				{image && (
 					<div className="relative w-full aspect-[432/640] bg-black rounded-xl overflow-hidden">
-
-						{/* Cropper */}
 						<Cropper
 							image={image}
 							crop={crop}
 							zoom={zoom}
 							aspect={432 / 640}
 							onCropChange={setCrop}
-							onZoomChange={setZoom}
+							onZoomChange={(z) => setZoom(Number(z))}
 							onCropComplete={onCropComplete}
 						/>
 
-						{/* Frame Overlay */}
 						<img
-							src="/assets/frametransparent.png"
+							src="/assets/frames/frametransparent.png"
 							alt="frame"
 							className="absolute inset-0 w-full h-full pointer-events-none"
 						/>
 					</div>
 				)}
 
-				{/* Zoom slider */}
 				{image && (
 					<input
 						type="range"
@@ -113,7 +147,7 @@ export default function ImageFrameCropper() {
 						max={3}
 						step={0.1}
 						value={zoom}
-						onChange={(e) => setZoom(e.target.value)}
+						onChange={(e) => setZoom(Number(e.target.value))}
 						className="w-full accent-orange-800"
 					/>
 				)}
@@ -122,10 +156,27 @@ export default function ImageFrameCropper() {
 				{image && (
 					<button
 						onClick={handleUpload}
-						className="w-full bg-orange-800 hover:bg-orange-700 transition rounded-lg py-2 font-semibold"
+						disabled={uploading}
+						className={`w-full transition rounded-lg py-2 font-semibold ${uploading
+							? "bg-gray-600 cursor-not-allowed"
+							: "bg-orange-800 hover:bg-orange-700"
+							}`}
 					>
-						Upload Cropped Image
+						{uploading ? "Uploading..." : "Upload Cropped Image"}
 					</button>
+				)}
+
+				{/* Status feedback */}
+				{uploadStatus === "success" && (
+					<p className="text-green-400 text-sm text-center">
+						Upload successful ✔
+					</p>
+				)}
+
+				{uploadStatus === "error" && (
+					<p className="text-red-400 text-sm text-center">
+						Upload failed ✖
+					</p>
 				)}
 			</div>
 		</div>

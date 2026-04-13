@@ -3,9 +3,8 @@
 import { useEffect, useState } from "react";
 import Card from "../../components/Card";
 import { CardCreate } from "@/app/interfaces/card";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as cardsAPI from "@/app/utility/CardAPICalls";
-import { randomUUID } from "crypto";
 import { API_URL } from "@/app/settings";
 
 export default function CardMaker() {
@@ -38,6 +37,8 @@ export default function CardMaker() {
 
 	const [id, setid] = useState(0);
 	const params = useSearchParams();
+
+	const router = useRouter();
 
 	useEffect(() => {
 		const currentid = Number(params.get("id"));
@@ -171,22 +172,35 @@ export default function CardMaker() {
 
 						<div>
 							<p>Type 1</p>
-							<input
+							<select
 								name="type1"
 								value={form.type1}
 								onChange={handleChange}
 								className="input"
-							/>
-						</div>
+							>
+								{typeOptions.map((opt) => (
+									<option key={opt.value} value={opt.value}>
+										{opt.label}
+									</option>
+								))}
+							</select>
 
+						</div>
 						<div>
 							<p>Type 2</p>
-							<input
+							<select
 								name="type2"
 								value={form.type2}
 								onChange={handleChange}
 								className="input"
-							/>
+							>
+								{typeOptions.map((opt) => (
+									<option key={opt.value} value={opt.value}>
+										{opt.label}
+									</option>
+								))}
+							</select>
+
 						</div>
 
 						{/* SKILL 1 */}
@@ -198,7 +212,7 @@ export default function CardMaker() {
 								onChange={handleChange}
 								className="input"
 							>
-								{linkOptions.map((opt) => (
+								{skilltypeOptions.map((opt) => (
 									<option key={opt.value} value={opt.value}>
 										{opt.label}
 									</option>
@@ -222,7 +236,7 @@ export default function CardMaker() {
 								onChange={handleChange}
 								className="input"
 							>
-								{linkOptions.map((opt) => (
+								{skilltypeOptions.map((opt) => (
 									<option key={opt.value} value={opt.value}>
 										{opt.label}
 									</option>
@@ -345,6 +359,12 @@ export default function CardMaker() {
 								}
 							>
 								{id > 0 ? "Update Card" : "Create Card"}
+							</button>
+
+							<button
+								className="w-full bg-slate-800 text-white text-2xl font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors"
+								onClick={() => { router.push("/main/imageupload") }}>
+								{"Upload illustration first"}
 							</button>
 
 							{id > 0 && (
