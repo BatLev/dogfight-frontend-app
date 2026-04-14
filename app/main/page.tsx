@@ -5,7 +5,7 @@ export default function Home() {
 	return (
 		<div className={styles.page}>
 
-			<h1 className="text-5xl underline">Dogfight</h1>
+			<h1 className="text-5xl underline">DOGFIGHT</h1>
 
 			{/* Pinned Comment */}
 			<div className={styles.pinned}>
@@ -54,17 +54,17 @@ export default function Home() {
 }
 
 const styles = {
-	page: "min-h-screen bg-slate-950 text-slate-200 flex flex-col items-center gap-6 p-6",
+	page: "min-h-screen bg-slate-950 text-orange-700 flex flex-col items-center gap-6 p-6",
 
 	pinned: "w-full max-w-2xl border rounded-lg border-orange-800 p-4 text-sm",
 
 	post: "w-full max-w-2xl",
 
-	header: "bg-[url(/assets/textures/textboxtexture.png)] border rounded-t-lg  border-orange-800 border-b-black h-12 flex flex-cols-2 justify-between justify-items-center p-3 bg-slate-800 bg-cover bg-center",
+	header: " border rounded-t-lg  border-orange-800 border-b-black h-12 flex flex-cols-2 justify-between justify-items-center p-3 bg-slate-800 bg-cover bg-center",
 
-	title: "text-xl text-slate-100",
+	title: "text-xl text-orange-700",
 
-	date: "text-lg text-slate-400",
+	date: "text-lg text-orange-700",
 
-	content: "border rounded-b-lg border-orange-800 border-t-black p-4 mt-0 text-sm leading-relaxed",
+	content: "border rounded-b-lg border-orange-800 border-t-black p-4 mt-0 text-sm text-slate-200 leading-relaxed",
 };
