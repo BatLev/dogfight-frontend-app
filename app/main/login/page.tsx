@@ -1,106 +1,89 @@
-import { CardGet, CardCreate } from "@/app/interfaces/card";
-import { API_URL } from "@/app/settings";
+'use client'
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 
-// ----------------------
-// 🔧 CONFIG (ONLY CHANGE THIS PER ENTITY)
-// ----------------------
+export default function Login() {
+	const [username, setUsername] = useState("");
+	const [password, setPassword] = useState("");
 
-const RESOURCE = "cards";
 
-type Entity = CardGet;
-type Create = CardCreate;
-type Update = CardCreate;
+	const router = useRouter();
 
-// ----------------------
-// Helpers
-// ----------------------
+	const handleLogin = async (e) => {
+		e.preventDefault();
 
-const getToken = (): string | undefined => {
-	if (typeof window === "undefined") return undefined;
-	return localStorage.getItem("token") || undefined;
-};
+		try {
+			const res = await fetch("http://127.0.0.1:8000/users/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ username, password })
+			});
 
-const getAuthHeaders = (token?: string): HeadersInit => ({
-	"Content-Type": "application/json",
-	...(token ? { Authorization: `Bearer ${token}` } : {}),
-});
+			const data = await res.json();
 
-async function handleResponse<T>(response: Response): Promise<T> {
-	if (!response.ok) {
-		const message = await response.text();
-		throw new Error(message || "Request failed");
-	}
+			if (!res.ok) {
+				alert(data.detail || "Login failed");
+				return;
+			}
 
-	if (response.status === 204) {
-		return undefined as T;
-	}
+			localStorage.setItem("token", data.access_token);
+			router.push("/main");
+		} catch (err) {
+			console.error(err);
+			alert("Server error");
+		}
+	};
 
-	return response.json();
-}
+	const handleLogout = () => {
+		localStorage.removeItem("token");
+		alert("Signed out");
+	};
 
-async function request<T>(
-	path: string,
-	options: RequestInit = {}
-): Promise<T> {
-	const token = getToken();
+	return (
+		<div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-200">
+			<div className="w-80 border border-amber-700 p-8 bg-slate-900">
 
-	const response = await fetch(`${API_URL}/${path}`, {
-		...options,
-		headers: {
-			...getAuthHeaders(token),
-			...(options.headers || {}),
-		},
-	});
+				{/* Logo */}
+				<h1 className="text-center text-2xl tracking-widest text-amber-700 mb-8">
+					DOGFIGHT
+				</h1>
 
-	return handleResponse<T>(response);
-}
+				{/* Form */}
+				<form onSubmit={handleLogin} className="flex flex-col gap-4">
+					<input
+						className="bg-transparent border border-slate-700 px-3 py-2 outline-none focus:border-amber-700"
+						type="text"
+						placeholder="username"
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+					/>
 
-// ----------------------
-// API calls
-// ----------------------
+					<input
+						className="bg-transparent border border-slate-700 px-3 py-2 outline-none focus:border-amber-700"
+						type="password"
+						placeholder="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+					/>
 
-// GET all
-export async function getAll(token?: string): Promise<Entity[]> {
-	return request<Entity[]>(RESOURCE);
-}
+					<button
+						className="border border-amber-700 text-amber-700 py-2 hover:bg-amber-700 hover:text-black transition"
+						type="submit"
+					>
+						LOGIN
+					</button>
+				</form>
 
-// GET one
-export async function getOne(
-	id: number,
-	token?: string
-): Promise<Entity> {
-	return request<Entity>(`${RESOURCE}/${id}`);
-}
-
-// CREATE
-export async function create(
-	body: Create,
-	token?: string
-): Promise<Entity> {
-	return request<Entity>(RESOURCE, {
-		method: "POST",
-		body: JSON.stringify(body),
-	});
-}
-
-// UPDATE
-export async function update(
-	id: number,
-	body: Update,
-	token?: string
-): Promise<Entity> {
-	return request<Entity>(`${RESOURCE}/${id}`, {
-		method: "PUT", // or PATCH
-		body: JSON.stringify(body),
-	});
-}
-
-// DELETE
-export async function remove(
-	id: number,
-	token?: string
-): Promise<void> {
-	return request<void>(`${RESOURCE}/${id}`, {
-		method: "DELETE",
-	});
+				{/* Logout */}
+				<button
+					onClick={handleLogout}
+					className="mt-6 w-full text-xs text-slate-500 hover:text-slate-300"
+				>
+					SIGN OUT
+				</button>
+			</div>
+		</div>
+	);
 }
