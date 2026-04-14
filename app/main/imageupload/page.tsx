@@ -3,21 +3,21 @@
 import { API_URL } from "@/app/settings";
 import { useState, useCallback, useEffect } from "react";
 import Cropper from "react-easy-crop";
+import type { Area } from "react-easy-crop";
 
-const generateRandomFilename = () =>
+const generateRandomFilename = (): string =>
 	`img_${Date.now()}_${Math.random().toString(36).slice(2, 10)}.jpg`;
 
 export default function ImageFrameCropper() {
-	const [image, setImage] = useState(null);
-	const [crop, setCrop] = useState({ x: 0, y: 0 });
-	const [zoom, setZoom] = useState(1);
-	const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+	const [image, setImage] = useState<string | null>(null);
+	const [crop, setCrop] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+	const [zoom, setZoom] = useState<number>(1);
+	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
-	const [filename, setFilename] = useState(generateRandomFilename());
+	const [filename, setFilename] = useState<string>(generateRandomFilename());
 
-	// upload states
-	const [uploading, setUploading] = useState(false);
-	const [uploadStatus, setUploadStatus] = useState(null); // "success" | "error" | null
+	const [uploading, setUploading] = useState<boolean>(false);
+	const [uploadStatus, setUploadStatus] = useState<"success" | "error" | null>(null);
 
 	useEffect(() => {
 		return () => {
@@ -25,18 +25,22 @@ export default function ImageFrameCropper() {
 		};
 	}, [image]);
 
-	const onCropComplete = useCallback((_, croppedPixels) => {
-		setCroppedAreaPixels(croppedPixels);
-	}, []);
+	const onCropComplete = useCallback(
+		(_: Area, croppedPixels: Area) => {
+			setCroppedAreaPixels(croppedPixels);
+		},
+		[]
+	);
 
-	const handleFileChange = (e) => {
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
+
 		setImage(URL.createObjectURL(file));
 		setUploadStatus(null);
 	};
 
-	const createImage = (url) =>
+	const createImage = (url: string): Promise<HTMLImageElement> =>
 		new Promise((resolve, reject) => {
 			const img = new Image();
 			img.src = url;
@@ -44,30 +48,35 @@ export default function ImageFrameCropper() {
 			img.onerror = reject;
 		});
 
-	const getCroppedImage = async () => {
+	const getCroppedImage = async (): Promise<Blob | null> => {
 		if (!image || !croppedAreaPixels) return null;
 
 		const img = await createImage(image);
 
+		const scaleX = img.naturalWidth / img.width;
+		const scaleY = img.naturalHeight / img.height;
+
 		const canvas = document.createElement("canvas");
 		const ctx = canvas.getContext("2d");
 
-		canvas.width = croppedAreaPixels.width;
-		canvas.height = croppedAreaPixels.height;
+		if (!ctx) return null;
+
+		canvas.width = croppedAreaPixels.width * scaleX;
+		canvas.height = croppedAreaPixels.height * scaleY;
 
 		ctx.drawImage(
 			img,
-			croppedAreaPixels.x,
-			croppedAreaPixels.y,
-			croppedAreaPixels.width,
-			croppedAreaPixels.height,
+			croppedAreaPixels.x * scaleX,
+			croppedAreaPixels.y * scaleY,
+			croppedAreaPixels.width * scaleX,
+			croppedAreaPixels.height * scaleY,
 			0,
 			0,
-			croppedAreaPixels.width,
-			croppedAreaPixels.height
+			canvas.width,
+			canvas.height
 		);
 
-		return new Promise((resolve) => {
+		return new Promise<Blob | null>((resolve) => {
 			canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.9);
 		});
 	};
@@ -83,13 +92,10 @@ export default function ImageFrameCropper() {
 			const formData = new FormData();
 			formData.append("file", blob, filename);
 
-			const res = await fetch(
-				`${API_URL}/upload_illustration/${filename}`,
-				{
-					method: "POST",
-					body: formData,
-				}
-			);
+			const res = await fetch(`${API_URL}/upload_illustration/${filename}`, {
+				method: "POST",
+				body: formData,
+			});
 
 			if (!res.ok) throw new Error("Upload failed");
 
@@ -105,7 +111,6 @@ export default function ImageFrameCropper() {
 	return (
 		<div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-6">
 			<div className="w-full max-w-md space-y-4">
-
 				<input
 					type="file"
 					accept="image/*"
@@ -121,17 +126,21 @@ export default function ImageFrameCropper() {
 				/>
 
 				{image && (
-					<div className="relative w-full aspect-[432/640] bg-black rounded-xl overflow-hidden">
+					<div className="relative w-full aspect-[436/613] bg-black overflow-hidden">
 						<Cropper
 							image={image}
 							crop={crop}
 							zoom={zoom}
-							aspect={432 / 640}
+							aspect={436 / 613}
+							cropShape="rect"
+							showGrid={false}
+							objectFit="cover"
 							onCropChange={setCrop}
 							onZoomChange={(z) => setZoom(Number(z))}
 							onCropComplete={onCropComplete}
 						/>
 
+						{/* Frame overlay */}
 						<img
 							src="/assets/frames/frametransparent.png"
 							alt="frame"
@@ -152,7 +161,6 @@ export default function ImageFrameCropper() {
 					/>
 				)}
 
-				{/* Upload button */}
 				{image && (
 					<button
 						onClick={handleUpload}
@@ -166,7 +174,6 @@ export default function ImageFrameCropper() {
 					</button>
 				)}
 
-				{/* Status feedback */}
 				{uploadStatus === "success" && (
 					<p className="text-green-400 text-sm text-center">
 						Upload successful ✔

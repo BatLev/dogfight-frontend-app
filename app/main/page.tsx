@@ -10,24 +10,24 @@ export default function Home() {
 			{/* Pinned Comment */}
 			<div className={styles.pinned}>
 				<p>
-					Welcome to the blog. This is a pinned message. You can use this area
-					for announcements, updates, or anything important.
+					Welcome! For optimal user experience use updated browser and use swipe navigation on mobile.
 				</p>
 			</div>
 
-			{/* ===================== POSTS ===================== */}
+			{/* ===================== POSTS ================= */}
 
 			{/* Post 1 */}
 			<div className={styles.post}>
 				<div className={styles.header}>
-					<h2 className={styles.title}>First Post</h2>
-					<span className={styles.date}>2026-03-31</span>
+					<h2 className={styles.title}>Roadmap</h2>
+					<span className={styles.date}>2026-04-17</span>
 				</div>
 
 				<div className={styles.content}>
 					<p>
-						This is the first post. Replace this text with your actual content.
-						Keep it minimal and clean.
+						After we generate cards for the first playtest I will add deckbuilder page and multiplayer.
+						I will soon add forum so we dont flood messenger.
+						If the game will be funny enough I will add meme page.
 					</p>
 				</div>
 			</div>
@@ -35,19 +35,19 @@ export default function Home() {
 			{/* Post 2 */}
 			<div className={styles.post}>
 				<div className={styles.header}>
-					<h2 className={styles.title}>Another Update</h2>
-					<span className={styles.date}>2026-03-30</span>
+					<h2 className={styles.title}>Hello World!</h2>
+					<span className={styles.date}>2026-04-16</span>
 				</div>
 
 				<div className={styles.content}>
 					<p>
-						Add more posts by copying one of these blocks and editing the text.
+						Finally published the MVP. more update soon
 					</p>
 				</div>
 			</div>
 
 			{/* ===================== END POSTS ===================== */}
-			<Chat></Chat>
+			{/*<Chat></Chat>*/}
 		</div>
 
 	);
@@ -60,7 +60,7 @@ const styles = {
 
 	post: "w-full max-w-2xl",
 
-	header: "bg-[url(/textboxtexture.png)] border rounded-t-lg  border-orange-800 border-b-black h-12 flex flex-cols-2 justify-between justify-items-center p-3 bg-slate-800 bg-cover bg-center",
+	header: "bg-[url(/assets/textures/textboxtexture.png)] border rounded-t-lg  border-orange-800 border-b-black h-12 flex flex-cols-2 justify-between justify-items-center p-3 bg-slate-800 bg-cover bg-center",
 
 	title: "text-xl text-slate-100",
 

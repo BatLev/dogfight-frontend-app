@@ -1,119 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Card from "@/app/components/Card";
+import { getAll } from "@/app/utility/CardAPICalls";
+import { API_URL } from "@/app/settings";
+import type { CardGet } from "@/app/interfaces/card";
 
 // ----------------------
-// Dummy Data
+// Types
 // ----------------------
-const cards = [
-	{
-		id: 1,
-		name: "Freezer",
-		illustration: "/templateimage.png",
-		type1: "hazard",
-		type2: "hazard",
-		box1Icon: "hazard",
-		box1Text: "Freeze enemy unit",
-		box2Icon: "hazard",
-		box2Text: "Slow effect",
-		cost: "4X3P",
-		power: "4",
-		size: "4",
-		linktop: true,
-		linkbottom: false,
-		linkleft: true,
-		linkright: false,
-		cardset: "set1",
-		userId: "Felix",
-	},
-	{
-		id: 2,
-		name: "Blaster",
-		illustration: "/templateimage.png",
-		type1: "hazard",
-		type2: "hazard",
-		box1Icon: "hazard",
-		box1Text: "Deal damage",
-		box2Icon: "hazard",
-		box2Text: "Extra hit",
-		cost: "3X2P",
-		power: "5",
-		size: "2",
-		linktop: false,
-		linkbottom: true,
-		linkleft: false,
-		linkright: true,
-		cardset: "set2",
-		userId: "Levente",
-	},
-
-	{
-		id: 3,
-		name: "Freezer",
-		illustration: "/templateimage.png",
-		type1: "hazard",
-		type2: "hazard",
-		box1Icon: "hazard",
-		box1Text: "Freeze enemy unit",
-		box2Icon: "hazard",
-		box2Text: "Slow effect",
-		cost: "4X3P",
-		power: "4",
-		size: "4",
-		linktop: true,
-		linkbottom: false,
-		linkleft: true,
-		linkright: false,
-		cardset: "set1",
-		userId: "Felix",
-	},
-	{
-		id: 4,
-		name: "Dick",
-		illustration: "/templateimage.png",
-		type1: "hazard",
-		type2: "hazard",
-		box1Icon: "hazard",
-		box1Text: "Deal damage",
-		box2Icon: "hazard",
-		box2Text: "Extra hit",
-		cost: "3X2P",
-		power: "5",
-		size: "2",
-		linktop: false,
-		linkbottom: true,
-		linkleft: false,
-		linkright: true,
-		cardset: "set2",
-		userId: "Levente",
-	},
-	{
-		id: 5,
-		name: "Freezer",
-		illustration: "/templateimage.png",
-		type1: "hazard",
-		type2: "hazard",
-		box1Icon: "hazard",
-		box1Text: "Freeze enemy unit",
-		box2Icon: "hazard",
-		box2Text: "Slow effect",
-		cost: "4X3P",
-		power: "4",
-		size: "4",
-		linktop: true,
-		linkbottom: false,
-		linkleft: true,
-		linkright: false,
-		cardset: "set1",
-		userId: "Felix",
-	}
-];
-
-const users = ["Felix", "Levente"];
-const sets = ["set1", "set2"];
-
+type User = {
+	id: number;
+	username: string;
+	role: string;
+};
 
 // ----------------------
 // Filter Button Group
@@ -152,7 +53,6 @@ function FilterGroup({
 	);
 }
 
-
 // ----------------------
 // Card Wrapper
 // ----------------------
@@ -161,7 +61,7 @@ function GalleryCard({
 	selected,
 	onClick,
 }: {
-	card: any;
+	card: CardGet;
 	selected: boolean;
 	onClick: () => void;
 }) {
@@ -176,13 +76,16 @@ function GalleryCard({
 		>
 			<div
 				className={`
-          ${selected ? `
+          ${selected
+						? `
             fixed 
             top-1/2 left-1/2 
             -translate-x-1/2 -translate-y-1/2 
             w-[90vw] 
             z-50
-          ` : ""}
+          `
+						: ""
+					}
 
           ${selected ? "lg:scale-30" : "hover:scale-105"}
 
@@ -195,43 +98,137 @@ function GalleryCard({
 	);
 }
 
-
 // ----------------------
 // MAIN COMPONENT
 // ----------------------
 export default function CardGallery() {
 	const router = useRouter();
 
-	const [selectedUser, setSelectedUser] = useState("all");
-	const [selectedSet, setSelectedSet] = useState("all");
+	const [cards, setCards] = useState<CardGet[]>([]);
+	const [users, setUsers] = useState<User[]>([]);
+
+	const [loadingCards, setLoadingCards] = useState(true);
+	const [loadingUsers, setLoadingUsers] = useState(true);
+
+	const [error, setError] = useState<string | null>(null);
+
+	const [selectedUser, setSelectedUser] = useState<string>("all");
+	const [selectedSet, setSelectedSet] = useState<string>("all");
 	const [search, setSearch] = useState("");
 	const [selectedCardId, setSelectedCardId] = useState<number | null>(null);
 
 	// ----------------------
+	// Fetch Cards
+	// ----------------------
+	useEffect(() => {
+		async function fetchCards() {
+			try {
+				setLoadingCards(true);
+				const res = (await getAll()) as CardGet[];
+				setCards(res);
+			} catch (err) {
+				console.error(err);
+				setError("Failed to load cards");
+			} finally {
+				setLoadingCards(false);
+			}
+		}
+
+		fetchCards();
+	}, []);
+
+	// ----------------------
+	// Fetch Users
+	// ----------------------
+	useEffect(() => {
+		async function fetchUsers() {
+			try {
+				setLoadingUsers(true);
+
+				const res = await fetch(`${API_URL}/users`);
+				if (!res.ok) throw new Error("Failed to fetch users");
+
+				const data: User[] = await res.json();
+				setUsers(data);
+			} catch (err) {
+				console.error(err);
+				setError("Failed to load users");
+			} finally {
+				setLoadingUsers(false);
+			}
+		}
+
+		fetchUsers();
+	}, []);
+
+	// ----------------------
+	// Derived Data
+	// ----------------------
+	const userMap = useMemo(() => {
+		const map = new Map<number, string>();
+		users.forEach((u) => map.set(u.id, u.username));
+		return map;
+	}, [users]);
+
+	const userOptions = useMemo(
+		() => ["all", ...users.map((u) => u.username)],
+		[users]
+	);
+
+	const setOptions = useMemo(() => {
+		const uniqueSets = Array.from(
+			new Set(cards.map((c) => c.cardset).filter(Boolean))
+		);
+
+		return ["all", ...uniqueSets.sort()];
+	}, [cards]);
+
+	// ----------------------
 	// Filtering
 	// ----------------------
-	const filteredCards = cards.filter((card) => {
-		const userMatch =
-			selectedUser === "all" || card.userId === selectedUser;
+	const filteredCards = useMemo(() => {
+		return cards.filter((card) => {
+			const username = userMap.get(card.user_id);
 
-		const setMatch =
-			selectedSet === "all" || card.cardset === selectedSet;
+			const userMatch =
+				selectedUser === "all" || username === selectedUser;
 
-		const searchMatch = card.name
-			.toLowerCase()
-			.includes(search.toLowerCase());
+			const setMatch =
+				selectedSet === "all" || card.cardset === selectedSet;
 
-		return userMatch && setMatch && searchMatch;
-	});
+			const searchMatch = card.name
+				.toLowerCase()
+				.includes(search.toLowerCase());
+
+			return userMatch && setMatch && searchMatch;
+		});
+	}, [cards, selectedUser, selectedSet, search, userMap]);
+
+	// ----------------------
+	// UI STATES
+	// ----------------------
+	if (loadingCards || loadingUsers) {
+		return (
+			<div className="min-h-screen flex items-center justify-center text-slate-400">
+				Loading...
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen flex items-center justify-center text-red-500">
+				{error}
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen bg-slate-950 text-slate-200 p-6 flex flex-col items-center gap-6">
-
 			{/* ---------------- FILTERS ---------------- */}
 			<div className="flex flex-wrap gap-4 items-center justify-center">
-
 				<FilterGroup
-					options={[...users, "all"]}
+					options={userOptions}
 					selected={selectedUser}
 					onChange={setSelectedUser}
 				/>
@@ -245,11 +242,10 @@ export default function CardGallery() {
 				/>
 
 				<FilterGroup
-					options={[...sets, "all"]}
+					options={setOptions}
 					selected={selectedSet}
 					onChange={setSelectedSet}
 				/>
-
 			</div>
 
 			{/* ---------------- BACKDROP ---------------- */}
@@ -262,7 +258,6 @@ export default function CardGallery() {
 
 			{/* ---------------- CARDS ---------------- */}
 			<div className="flex flex-wrap gap-8 justify-center w-full lg:w-[60%]">
-
 				{filteredCards.map((card) => (
 					<GalleryCard
 						key={card.id}
@@ -270,14 +265,13 @@ export default function CardGallery() {
 						selected={selectedCardId === card.id}
 						onClick={() => {
 							if (selectedCardId === card.id) {
-								router.push(`/main/cardmake/${card.id}`);
+								router.push(`/main/cardmake/?id=${card.id}`);
 							} else {
 								setSelectedCardId(card.id);
 							}
 						}}
 					/>
 				))}
-
 			</div>
 		</div>
 	);
