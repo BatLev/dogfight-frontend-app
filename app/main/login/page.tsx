@@ -1,19 +1,20 @@
-'use client'
+'use client';
+
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { API_URL } from "@/app/settings";
 
 export default function Login() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
-
 	const router = useRouter();
 
-	const handleLogin = async (e) => {
+	const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		try {
-			const res = await fetch("http://127.0.0.1:8000/users/login", {
+			const res = await fetch(API_URL + "/users/login", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Card from "../../components/Card";
 import { CardCreate } from "@/app/interfaces/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as cardsAPI from "@/app/utility/CardAPICalls";
 import { API_URL } from "@/app/settings";
 
-export default function CardMaker() {
+/* ---------------- INNER COMPONENT (fix for useSearchParams) ---------------- */
+
+function CardMakerContent() {
 	const [form, setForm] = useState<CardCreate>({
 		name: "???",
 		title: "???",
@@ -16,28 +18,22 @@ export default function CardMaker() {
 		cardtype: "unit",
 		type1: "/hazard.png",
 		type2: "/hazard.png",
-
 		skilltype1: "/hazard.png",
 		skilltext1: "???",
-
 		skilltype2: "/hazard.png",
 		skilltext2: "???",
-
 		cost: "?X?P",
 		power: "?",
 		size: "?",
-
 		linktop: "",
 		linkbottom: "",
 		linkleft: "",
 		linkright: "",
-
 		cardset: "",
 	});
 
 	const [id, setid] = useState(0);
 	const params = useSearchParams();
-
 	const router = useRouter();
 
 	useEffect(() => {
@@ -46,12 +42,10 @@ export default function CardMaker() {
 			setid(currentid);
 			cardsAPI.getOne(currentid).then((res) => setForm(res));
 		}
-	}, []);
+	}, [params]);
 
 	const handleChange = (
-		e: React.ChangeEvent<
-			HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-		>
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
 	) => {
 		const { name, value } = e.target;
 
@@ -76,9 +70,11 @@ export default function CardMaker() {
 		{ label: "Unit", value: "unit" },
 		{ label: "Command", value: "command" },
 		{ label: "Equipment", value: "equipment" },
-	]
+	];
 
-	const [illustrationOptions, setillustrationOptions] = useState<string[]>(["templateimage.png",]);
+	const [illustrationOptions, setillustrationOptions] = useState<string[]>([
+		"templateimage.png",
+	]);
 
 	useEffect(() => {
 		const token = localStorage.getItem("token");
@@ -89,23 +85,16 @@ export default function CardMaker() {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-			.then(res => {
+			.then((res) => {
 				if (!res.ok) throw new Error("Failed to fetch illustrations");
 				return res.json();
 			})
-			.then(data => setillustrationOptions(data.illustrations))
-			.catch(err => console.error(err));
+			.then((data) => setillustrationOptions(data.illustrations))
+			.catch((err) => console.error(err));
 	}, []);
 
-
-	const typeOptions = [
-		{ label: "Hazard", value: "hazard" },
-	]
-
-	const skilltypeOptions = [
-		{ label: "Hazard", value: "hazard" },
-	]
-
+	const typeOptions = [{ label: "Hazard", value: "hazard" }];
+	const skilltypeOptions = [{ label: "Hazard", value: "hazard" }];
 
 	const linkOptions = [
 		{ label: "None", value: "" },
@@ -120,6 +109,7 @@ export default function CardMaker() {
 	return (
 		<div className="min-h-screen bg-black text-[#F5F5DC] flex items-center justify-center p-4">
 			<div className="w-full max-w-6xl flex flex-col lg:flex-row gap-8">
+
 				{/* CARD */}
 				<div className="w-full max-w-[436px] mx-auto lg:mx-0">
 					<Card {...form} />
@@ -128,245 +118,110 @@ export default function CardMaker() {
 				{/* FORM */}
 				<div className="flex-1 w-full max-w-2xl mx-auto lg:mx-0">
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
 						<div>
 							<p>Name</p>
-							<input
-								name="name"
-								value={form.name}
-								onChange={handleChange}
-								className="input"
-							/>
+							<input name="name" value={form.name} onChange={handleChange} className="input" />
 						</div>
 
 						<div>
 							<p>Title</p>
-							<input
-								name="title"
-								value={form.title}
-								onChange={handleChange}
-								className="input"
-							/>
+							<input name="title" value={form.title} onChange={handleChange} className="input" />
 						</div>
 
 						<div>
 							<p>Illustration</p>
-							<select
-								name="illustration"
-								value={form.illustration}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="illustration" value={form.illustration} onChange={handleChange} className="input">
 								{illustrationOptions.map((opt) => (
-									<option key={opt} value={opt}>
-										{opt}
-									</option>
+									<option key={opt} value={opt}>{opt}</option>
 								))}
 							</select>
 						</div>
 
 						<div>
 							<p>Card Type</p>
-							<select
-								name="cardtype"
-								value={form.cardtype}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="cardtype" value={form.cardtype} onChange={handleChange} className="input">
 								{cardtypeOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
+									<option key={opt.value} value={opt.value}>{opt.label}</option>
 								))}
 							</select>
-
 						</div>
 
 						<div>
 							<p>Type 1</p>
-							<select
-								name="type1"
-								value={form.type1}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="type1" value={form.type1} onChange={handleChange} className="input">
 								{typeOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
+									<option key={opt.value} value={opt.value}>{opt.label}</option>
 								))}
 							</select>
-
 						</div>
+
 						<div>
 							<p>Type 2</p>
-							<select
-								name="type2"
-								value={form.type2}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="type2" value={form.type2} onChange={handleChange} className="input">
 								{typeOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
+									<option key={opt.value} value={opt.value}>{opt.label}</option>
 								))}
 							</select>
-
 						</div>
 
-						{/* SKILL 1 */}
-						<div className="grid gap-2">
+						{/* SKILLS */}
+						<div>
 							<p>Skill 1</p>
-							<select
-								name="skilltype1"
-								value={form.skilltype1}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="skilltype1" value={form.skilltype1} onChange={handleChange} className="input">
 								{skilltypeOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
+									<option key={opt.value} value={opt.value}>{opt.label}</option>
 								))}
 							</select>
-
-							<textarea
-								name="skilltext1"
-								value={form.skilltext1}
-								onChange={handleChange}
-								className="input h-20"
-							/>
+							<textarea name="skilltext1" value={form.skilltext1} onChange={handleChange} className="input h-20" />
 						</div>
 
-						{/* SKILL 2 */}
-						<div className="grid gap-2">
+						<div>
 							<p>Skill 2</p>
-							<select
-								name="skilltype2"
-								value={form.skilltype2}
-								onChange={handleChange}
-								className="input"
-							>
+							<select name="skilltype2" value={form.skilltype2} onChange={handleChange} className="input">
 								{skilltypeOptions.map((opt) => (
-									<option key={opt.value} value={opt.value}>
-										{opt.label}
-									</option>
+									<option key={opt.value} value={opt.value}>{opt.label}</option>
 								))}
 							</select>
-
-							<textarea
-								name="skilltext2"
-								value={form.skilltext2}
-								onChange={handleChange}
-								className="input h-20"
-							/>
+							<textarea name="skilltext2" value={form.skilltext2} onChange={handleChange} className="input h-20" />
 						</div>
 
 						<div>
 							<p>Cost</p>
-							<input
-								name="cost"
-								value={form.cost}
-								onChange={handleChange}
-								className="input"
-							/>
+							<input name="cost" value={form.cost} onChange={handleChange} className="input" />
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
-							<div>
-								<p>Power</p>
-								<input
-									name="power"
-									value={form.power}
-									onChange={handleChange}
-									className="input"
-								/>
-							</div>
-
-							<div>
-								<p>Size</p>
-								<input
-									name="size"
-									value={form.size}
-									onChange={handleChange}
-									className="input"
-								/>
-							</div>
+						<div>
+							<p>Power / Size</p>
+							<input name="power" value={form.power} onChange={handleChange} className="input" />
+							<input name="size" value={form.size} onChange={handleChange} className="input mt-2" />
 						</div>
 
-						{/* LINKS (NOW DROPDOWNS) */}
+						{/* LINKS */}
 						<div className="sm:col-span-2">
 							<p>Links</p>
-
 							<div className="grid grid-cols-2 gap-3 mt-2">
-								<select
-									name="linktop"
-									value={form.linktop}
-									onChange={handleChange}
-									className="input"
-								>
-									{linkOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											Top: {opt.label}
-										</option>
-									))}
-								</select>
-
-								<select
-									name="linkbottom"
-									value={form.linkbottom}
-									onChange={handleChange}
-									className="input"
-								>
-									{linkOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											Bottom: {opt.label}
-										</option>
-									))}
-								</select>
-
-								<select
-									name="linkleft"
-									value={form.linkleft}
-									onChange={handleChange}
-									className="input"
-								>
-									{linkOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											Left: {opt.label}
-										</option>
-									))}
-								</select>
-
-								<select
-									name="linkright"
-									value={form.linkright}
-									onChange={handleChange}
-									className="input"
-								>
-									{linkOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											Right: {opt.label}
-										</option>
-									))}
-								</select>
+								{["linktop", "linkbottom", "linkleft", "linkright"].map((key) => (
+									<select key={key} name={key} value={(form as any)[key]} onChange={handleChange} className="input">
+										{linkOptions.map((opt) => (
+											<option key={opt.value} value={opt.value}>
+												{opt.label}
+											</option>
+										))}
+									</select>
+								))}
 							</div>
 						</div>
 
 						{/* BUTTONS */}
 						<div className="sm:col-span-2 mt-6 space-y-4">
+
 							<button
 								className="w-full bg-slate-800 text-white text-2xl font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors"
 								onClick={
 									id > 0
-										? () =>
-											cardsAPI.update(id, form).then(() =>
-												alert("card updated")
-											)
-										: () =>
-											cardsAPI.create(form).then(() =>
-												alert("created card")
-											)
+										? () => cardsAPI.update(id, form).then(() => alert("card updated"))
+										: () => cardsAPI.create(form).then(() => alert("created card"))
 								}
 							>
 								{id > 0 ? "Update Card" : "Create Card"}
@@ -374,8 +229,9 @@ export default function CardMaker() {
 
 							<button
 								className="w-full bg-slate-800 text-white text-2xl font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors"
-								onClick={() => { router.push("/main/imageupload") }}>
-								{"Upload illustration first"}
+								onClick={() => router.push("/main/imageupload")}
+							>
+								Upload illustration first
 							</button>
 
 							{id > 0 && (
@@ -387,25 +243,35 @@ export default function CardMaker() {
 								</button>
 							)}
 						</div>
+
 					</div>
 				</div>
 			</div>
 
 			<style jsx>{`
-        .input {
-          background: black;
-          color: #f5f5dc;
-          border: 1px solid #f5f5dc;
-          padding: 8px 10px;
-          border-radius: 6px;
-          outline: none;
-          width: 100%;
-        }
-
-        .input:focus {
-          box-shadow: 0 0 0 1px #f5f5dc;
-        }
-      `}</style>
+				.input {
+					background: black;
+					color: #f5f5dc;
+					border: 1px solid #f5f5dc;
+					padding: 8px 10px;
+					border-radius: 6px;
+					outline: none;
+					width: 100%;
+				}
+				.input:focus {
+					box-shadow: 0 0 0 1px #f5f5dc;
+				}
+			`}</style>
 		</div>
+	);
+}
+
+/* ---------------- WRAPPER ---------------- */
+
+export default function Page() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<CardMakerContent />
+		</Suspense>
 	);
 }
