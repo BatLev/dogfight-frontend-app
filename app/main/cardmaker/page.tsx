@@ -81,9 +81,20 @@ export default function CardMaker() {
 	const [illustrationOptions, setillustrationOptions] = useState<string[]>(["templateimage.png",]);
 
 	useEffect(() => {
-		fetch(API_URL + "/upload_illustration/")
-			.then(res => res.json())
-			.then(data => setillustrationOptions(data.illustrations));
+		const token = localStorage.getItem("token");
+		if (!token) return;
+
+		fetch(API_URL + "/upload_illustration/", {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+			.then(res => {
+				if (!res.ok) throw new Error("Failed to fetch illustrations");
+				return res.json();
+			})
+			.then(data => setillustrationOptions(data.illustrations))
+			.catch(err => console.error(err));
 	}, []);
 
 

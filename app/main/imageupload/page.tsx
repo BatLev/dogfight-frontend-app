@@ -89,12 +89,19 @@ export default function ImageFrameCropper() {
 			const blob = await getCroppedImage();
 			if (!blob) throw new Error("No image to upload");
 
+			const token = localStorage.getItem("token"); // 👈 auth token
+
+			if (!token) throw new Error("No auth token found");
+
 			const formData = new FormData();
 			formData.append("file", blob, filename);
 
 			const res = await fetch(`${API_URL}/upload_illustration/${filename}`, {
 				method: "POST",
 				body: formData,
+				headers: {
+					Authorization: `Bearer ${token}`, // 👈 attach token
+				},
 			});
 
 			if (!res.ok) throw new Error("Upload failed");
@@ -166,8 +173,8 @@ export default function ImageFrameCropper() {
 						onClick={handleUpload}
 						disabled={uploading}
 						className={`w-full transition rounded-lg py-2 font-semibold ${uploading
-							? "bg-gray-600 cursor-not-allowed"
-							: "bg-orange-800 hover:bg-orange-700"
+								? "bg-gray-600 cursor-not-allowed"
+								: "bg-orange-800 hover:bg-orange-700"
 							}`}
 					>
 						{uploading ? "Uploading..." : "Upload Cropped Image"}
