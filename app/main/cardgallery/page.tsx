@@ -141,25 +141,34 @@ export default function CardGallery() {
 	// Fetch Users
 	// ----------------------
 	useEffect(() => {
-		async function fetchUsers() {
-			try {
-				setLoadingUsers(true);
+  async function fetchUsers() {
+    try {
+      setLoadingUsers(true);
 
-				const res = await fetch(`${API_URL}/users`);
-				if (!res.ok) throw new Error("Failed to fetch users");
+      const token = localStorage.getItem("token");
 
-				const data: User[] = await res.json();
-				setUsers(data);
-			} catch (err) {
-				console.error(err);
-				setError("Failed to load users");
-			} finally {
-				setLoadingUsers(false);
-			}
-		}
+      const res = await fetch(`${API_URL}/users`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-		fetchUsers();
-	}, []);
+      if (!res.ok) throw new Error("Failed to fetch users");
+
+      const data: User[] = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load users");
+    } finally {
+      setLoadingUsers(false);
+    }
+  }
+
+  fetchUsers();
+}, []);
 
 	// ----------------------
 	// Derived Data
