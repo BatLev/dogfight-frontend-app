@@ -10,7 +10,7 @@ export default function Home() {
 			{/* Pinned Comment */}
 			<div className={styles.pinned}>
 				<p>
-					Welcome! For optimal user experience use updated browser and use swipe navigation on mobile.
+					Welcome! For optimal user experience use updated browser and rotate for navbar on mobile.
 				</p>
 			</div>
 
