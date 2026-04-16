@@ -43,17 +43,17 @@ export default function Card({
 	function getPort(currentPort: string) {
 		switch (currentPort) {
 			case "unit/left":
-				return "/assets/ports/portleft.png"
+				return "/dogfight-frontend-app/assets/ports/portleft.png"
 			case "command/left":
-				return "/assets/ports/portleft_command.png"
+				return "/dogfight-frontend-app/assets/ports/portleft_command.png"
 			case "equipment/left":
-				return "/assets/ports/portleft_equipment.png"
+				return "/dogfight-frontend-app/assets/ports/portleft_equipment.png"
 			case "unit/right":
-				return "/assets/ports/portright.png"
+				return "/dogfight-frontend-app/assets/ports/portright.png"
 			case "command/right":
-				return "/assets/ports/portright_command.png"
+				return "/dogfight-frontend-app/assets/ports/portright_command.png"
 			case "equipment/right":
-				return "/assets/ports/portright_equipment.png"
+				return "/dogfight-frontend-app/assets/ports/portright_equipment.png"
 			default:
 				return undefined
 		}
@@ -261,14 +261,14 @@ const cardStyles: Record<CardType, any> = {
 			...styles.frame,
 			bg: "/dogfight-frontend-app/assets/frames/frametransparent.png",
 		},
-		textbox: "/assets/textures/textboximagetransparent.png",
+		textbox: "/dogfight-frontend-app/assets/textures/textboximagetransparent.png",
 	},
 
 	command: {
 		...styles,
 		frame: {
 			...styles.frame,
-			bg: "/assets/frames/frametransparent_command.png",
+			bg: "/dogfight-frontend-app/assets/frames/frametransparent_command.png",
 			color: "drop-shadow-[0px_0px_1px_rgba(79,97,254,0.9),0px_0px_1px_rgba(79,97,254,0.9)]"
 		},
 		cost: {
@@ -287,14 +287,14 @@ const cardStyles: Record<CardType, any> = {
 			...styles.boxText,
 			color: "text-[#4f61fe] text-shadow-black"
 		},
-		textbox: "/assets/textures/textboximagetransparent_command.png",
+		textbox: "/dogfight-frontend-app/assets/textures/textboximagetransparent_command.png",
 	},
 
 	equipment: {
 		...styles,
 		frame: {
 			...styles.frame,
-			bg: "/assets/frames/frametransparent_equipment.png",
+			bg: "/dogfight-frontend-app/assets/frames/frametransparent_equipment.png",
 			color: "drop-shadow-[0px_0px_1px_rgba(240,106,61,0.9),0px_0px_1px_rgba(240,106,61,0.9)]"
 
 		},
@@ -315,6 +315,6 @@ const cardStyles: Record<CardType, any> = {
 			color: "text-[#f06a3d] text-shadow-black"
 		},
 
-		textbox: "/assets/textures/textboximagetransparent_equipment.png",
+		textbox: "/dogfight-frontend-app/assets/textures/textboximagetransparent_equipment.png",
 	},
 }
