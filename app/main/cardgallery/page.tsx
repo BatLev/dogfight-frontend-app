@@ -274,7 +274,7 @@ export default function CardGallery() {
 						selected={selectedCardId === card.id}
 						onClick={() => {
 							if (selectedCardId === card.id) {
-								router.push(`/main/cardmake/?id=${card.id}`);
+								router.push(`/main/cardmaker/?id=${card.id}`);
 							} else {
 								setSelectedCardId(card.id);
 							}
