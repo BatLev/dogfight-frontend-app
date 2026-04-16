@@ -224,12 +224,12 @@ const styles = {
 	},
 
 	powerIcon: {
-		base: "absolute aspect-square top-[90%] left-[11.5%] h-1/15 mask-[url('/assets/icons/power.png')] mask-alpha mask-cover",
+		base: "absolute aspect-square top-[90%] left-[11.5%] h-1/15 mask-[url('/dogfight-frontend-app/assets/icons/power.png')] mask-alpha mask-cover",
 		color: "bg-[#e8931d]"
 	},
 
 	sizeIcon: {
-		base: "absolute aspect-square top-[90.5%] left-[35%] h-1/16 mask-[url('/assets/icons/size.png')] mask-alpha mask-cover",
+		base: "absolute aspect-square top-[90.5%] left-[35%] h-1/16 mask-[url('/dogfight-frontend-app/assets/icons/size.png')] mask-alpha mask-cover",
 		color: "bg-[#e8931d]"
 	},
 
