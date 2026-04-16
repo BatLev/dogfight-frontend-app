@@ -259,7 +259,7 @@ const cardStyles: Record<CardType, any> = {
 		...styles,
 		frame: {
 			...styles.frame,
-			bg: "/assets/frames/frametransparent.png",
+			bg: "/dogfight-frontend-app/assets/frames/frametransparent.png",
 		},
 		textbox: "/assets/textures/textboximagetransparent.png",
 	},
