@@ -97,11 +97,11 @@ export default function Card({
 
 			{/* TYPES */}
 			<img
-				src={"/assets/icons/" + type1}
+				src={"/dogfight-frontend-app/assets/icons/" + type1}
 				className={clsx(styles.type.base, styles.type.top, styles.type.color)}
 			/>
 			<img
-				src={"/assets/icons/" + type2}
+				src={"/dogfight-frontend-app/assets/icons/" + type2}
 				className={clsx(styles.type.base, styles.type.bottom, styles.type.color)}
 			/>
 
@@ -133,7 +133,7 @@ export default function Card({
 					cardStyles[cardTypesafe].box.color
 				)}
 			>
-				<img src={"/assets/icons/" + skilltype1} className={clsx(cardStyles[cardTypesafe].boxIcon.base, cardStyles[cardTypesafe].boxIcon.color)} />
+				<img src={"/dogfight-frontend-app/assets/icons/" + skilltype1} className={clsx(cardStyles[cardTypesafe].boxIcon.base, cardStyles[cardTypesafe].boxIcon.color)} />
 				<p className={clsx(cardStyles[cardTypesafe].boxText.base, cardStyles[cardTypesafe].boxText.color)}>
 					{skilltext1}
 				</p>
@@ -152,7 +152,7 @@ export default function Card({
 					cardStyles[cardTypesafe].box.color
 				)}
 			>
-				<img src={"/assets/icons/" + skilltype2} className={clsx(cardStyles[cardTypesafe].boxIcon.base, cardStyles[cardTypesafe].boxIcon.color)} />
+				<img src={"/dogfight-frontend-app/assets/icons/" + skilltype2} className={clsx(cardStyles[cardTypesafe].boxIcon.base, cardStyles[cardTypesafe].boxIcon.color)} />
 				<p className={clsx(cardStyles[cardTypesafe].boxText.base, cardStyles[cardTypesafe].boxText.color)}>
 					{skilltext2}
 				</p>
