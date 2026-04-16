@@ -50,7 +50,7 @@ export default function Header() {
 		<header className="h-20 bg-gradient-to-r from-[#7b4e24] to-slate-800 text-white flex items-center px-4 shadow-md">
 			{/* Logo */}
 			<div className="flex-shrink-0">
-				<Image src="/assets/ports/portfull.png" alt="MyTCG" width={80} height={80} className="rounded-md" />
+				<Image src="/dogfight-frontend-app/assets/ports/portfull.png" alt="MyTCG" width={80} height={80} className="rounded-md" />
 			</div>
 
 			{isDesktop ? (
