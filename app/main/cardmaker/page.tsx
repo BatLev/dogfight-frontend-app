@@ -39,7 +39,7 @@ function CardMakerContent() {
 
 	useEffect(()=>{
 		console.log(jwtDecode(localStorage.getItem(token)))
-	},[])
+	},[]);
 
 	useEffect(() => {
 		const currentid = Number(params.get("id"));
