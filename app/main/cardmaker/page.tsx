@@ -6,8 +6,13 @@ import { CardCreate } from "@/app/interfaces/card";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as cardsAPI from "@/app/utility/CardAPICalls";
 import { API_URL } from "@/app/settings";
+import jwtDecode from 'jwt-decode';
 
 /* ---------------- INNER COMPONENT (fix for useSearchParams) ---------------- */
+
+useEffect(()=>{
+	console.log(jwtDecode(localStorage.getItem(token)))
+},[])
 
 function CardMakerContent() {
 	const [form, setForm] = useState<CardCreate>({
