@@ -10,10 +10,6 @@ import jwtDecode from 'jwt-decode';
 
 /* ---------------- INNER COMPONENT (fix for useSearchParams) ---------------- */
 
-useEffect(()=>{
-	console.log(jwtDecode(localStorage.getItem(token)))
-},[])
-
 function CardMakerContent() {
 	const [form, setForm] = useState<CardCreate>({
 		name: "???",
@@ -40,6 +36,10 @@ function CardMakerContent() {
 	const [id, setid] = useState(0);
 	const params = useSearchParams();
 	const router = useRouter();
+
+	useEffect(()=>{
+		console.log(jwtDecode(localStorage.getItem(token)))
+	},[])
 
 	useEffect(() => {
 		const currentid = Number(params.get("id"));
