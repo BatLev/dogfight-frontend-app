@@ -13,51 +13,33 @@ const pages: Page[] = [
 	{ name: "Home", path: "/main" },
 	{ name: "Card Maker", path: "/main/cardmaker" },
 	{ name: "Card Gallery", path: "/main/cardgallery" },
+	//	{ name: "Deck Builder", path: "/main/deckbuilder" },
 	{ name: "Rules", path: "/main/rules" },
+	//	{ name: "Combat", path: "/main/combat" },
+	{ name: "Login", path: "/main/login" }
 ]
 
 export default function Header() {
 	const pathname = usePathname()
 	const router = useRouter()
 	const [isDesktop, setIsDesktop] = useState(false)
-	const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-	const handleLogout = () => {
-		localStorage.removeItem("token");
-		setIsAuthenticated(false);
-		router.replace("/main/login");
-	};
-
-	// auth check
+	// redirect to auth when needed
 	useEffect(() => {
-		let token = localStorage.getItem("token");
 
-		if (pathname !== "/main/login") {
+		let token = localStorage.getItem("token");
+		if (pathname != "/main/login") {
 			if (token) {
-				try {
-					let payload: any = jwtDecode(token);
-					if (payload.exp * 1000 < Date.now()) {
-						localStorage.removeItem("token");
-						setIsAuthenticated(false);
-						router.replace("/main/login");
-					} else {
-						setIsAuthenticated(true);
-					}
-				} catch {
-					localStorage.removeItem("token");
-					setIsAuthenticated(false);
-					router.replace("/main/login");
-				}
+				let payload: any = jwtDecode(token);
+				if (payload.exp * 1000 < Date.now()) router.replace("/main/login");
 			} else {
-				setIsAuthenticated(false);
 				router.replace("/main/login");
 			}
-		} else {
-			setIsAuthenticated(false);
 		}
-	}, [pathname, router]);
+		console.log("redirect")
+	})
 
-	// Detect desktop
+	// Detect desktop based on window width
 	useEffect(() => {
 		const checkWidth = () => setIsDesktop(window.innerWidth >= 768)
 		checkWidth()
@@ -69,23 +51,17 @@ export default function Header() {
 		<header className="h-20 bg-gradient-to-r from-[#7b4e24] to-slate-800 text-white flex items-center px-4 shadow-md">
 			{/* Logo */}
 			<div className="flex-shrink-0">
-				<Image
-					src="/dogfight-frontend-app/assets/ports/portfull.png"
-					alt="MyTCG"
-					width={80}
-					height={80}
-					className="rounded-md filter-none"
-				/>
+				<Image src="/dogfight-frontend-app/assets/ports/portfull.png" alt="MyTCG" width={80} height={80} className="rounded-md" />
 			</div>
 
 			{isDesktop ? (
-				<div className="flex-1 flex justify-center items-center space-x-4">
+				<div className="flex-1 flex justify-center space-x-4">
 					{pages.map((p) => (
 						<button
 							key={p.path}
 							onClick={() => router.push(p.path)}
 							className={`px-4 py-2 rounded-lg font-medium transition
-								${pathname === p.path
+                ${pathname === p.path
 									? "bg-orange-800 text-gray-100 shadow-lg text-lg"
 									: "bg-slate-900 text-gray-100 bg-opacity-20 hover:bg-opacity-40 text-lg"
 								}`}
@@ -93,32 +69,13 @@ export default function Header() {
 							{p.name}
 						</button>
 					))}
-
-					{isAuthenticated && (
-						<button
-							onClick={handleLogout}
-							className="ml-6 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 transition font-medium"
-						>
-							Logout
-						</button>
-					)}
 				</div>
 			) : (
-				<div className="flex-1 flex justify-between items-center px-2">
-					<div className="text-2xl font-semibold">
-						{pages.find((p) => p.path === pathname)?.name ?? ""}
-					</div>
-
-					{isAuthenticated && (
-						<button
-							onClick={handleLogout}
-							className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-sm"
-						>
-							Logout
-						</button>
-					)}
+				<div className="flex-1 text-center text-3xl font-semibold">
+					{pages.find((p) => p.path === pathname)?.name ?? ""}
 				</div>
 			)}
 		</header>
+
 	)
 }
