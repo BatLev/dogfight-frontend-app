@@ -31,7 +31,10 @@ export default function Header() {
 		if (pathname != "/main/login") {
 			if (token) {
 				let payload: any = jwtDecode(token);
-				if (payload.exp * 1000 < Date.now()) router.replace("/main/login");
+				if (payload.exp * 1000 < Date.now()) {
+					localStorage.removeItem("token");
+					router.replace("/main/login");
+				}
 			} else {
 				router.replace("/main/login");
 			}
